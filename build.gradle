@@ -1,5 +1,6 @@
 plugins {
 	id 'groovy'
+	id 'java-gradle-plugin'
 }
 
 version = '0.0.0'
@@ -9,10 +10,19 @@ repositories {
 	mavenCentral()
 }
 
+gradlePlugin {
+    plugins {
+        googleDriveUploader {
+            id = 'ru.kinca.google-drive-uploader'
+            implementationClass = 'ru.kinca.gradle.googledrive.GoogleDriveUploaderPlugin'
+        }
+    }
+}
+
 tasks.withType(GroovyCompile) {
     groovyOptions.optimizationOptions.indy = true
 }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.4.12'
+	compile localGroovy()
 }
