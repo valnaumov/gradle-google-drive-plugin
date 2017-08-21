@@ -1,6 +1,7 @@
 plugins {
 	id 'groovy'
 	id 'java-gradle-plugin'
+    id 'codenarc'
 }
 
 version = '0.0.0'
@@ -8,6 +9,10 @@ group = 'ru.kinca.gradle'
 
 repositories {
 	mavenCentral()
+}
+
+codenarc {
+    configFile = file('config/codenarc/codenarc.groovy')
 }
 
 gradlePlugin {

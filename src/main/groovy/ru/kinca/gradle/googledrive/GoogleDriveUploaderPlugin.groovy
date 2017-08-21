@@ -13,6 +13,6 @@ class GoogleDriveUploaderPlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        println 'GoogleDriveUploaderPlugin applied.'
+        project.logger.quiet 'GoogleDriveUploaderPlugin applied.'
     }
 }
