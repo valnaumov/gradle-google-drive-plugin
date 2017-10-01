@@ -2,6 +2,7 @@ plugins {
 	id 'groovy'
 	id 'java-gradle-plugin'
     id 'codenarc'
+    id 'maven-publish'
 }
 
 version = '0.0.0'
@@ -30,4 +31,13 @@ tasks.withType(GroovyCompile) {
 
 dependencies {
 	compile localGroovy()
+	compile gradleApi()
+    compile 'com.google.apis:google-api-services-drive:v3-rev80-1.22.0'
+    compile 'com.google.api-client:google-api-client:1.22.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
+    testCompile ('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+    testRuntime 'cglib:cglib-nodep:3.2.5'
+    testRuntime 'org.objenesis:objenesis:1.3'
 }
