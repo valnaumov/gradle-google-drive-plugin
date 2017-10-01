@@ -28,6 +28,9 @@ gradlePlugin {
 tasks.withType(GroovyCompile) {
     groovyOptions.optimizationOptions.indy = true
 }
+compileGroovy {
+    groovyOptions.configurationScript = file('config/compiler-customizer.groovy')
+}
 
 dependencies {
 	compile localGroovy()
