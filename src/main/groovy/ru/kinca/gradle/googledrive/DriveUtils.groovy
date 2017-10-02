@@ -65,4 +65,24 @@ final class DriveUtils
             folder.getId()
         }
     }
+
+    static boolean hasFile(
+        Drive drive,
+        File folder,
+        String fileName)
+    {
+        !drive.files().list()
+            .setSpaces(DEFAULT_SPACES)
+            .setCorpora(DEFAULT_COPRORA)
+            .setQ("name = '$fileName'" +
+                " and '${folder.getId()}' in parents" +
+                " and not trashed" +
+                " and mimeType != '$FOLDER_MIME_TYPE'")
+            .execute().getFiles().empty
+    }
+    
+    static File newFolder()
+    {
+        new File().setMimeType(FOLDER_MIME_TYPE)
+    }
 }
