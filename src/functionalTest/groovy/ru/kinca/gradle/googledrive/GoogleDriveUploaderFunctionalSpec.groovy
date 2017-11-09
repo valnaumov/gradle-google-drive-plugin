@@ -3,6 +3,7 @@ package ru.kinca.gradle.googledrive
 import com.google.api.client.util.store.MemoryDataStoreFactory
 import com.google.api.services.drive.model.File as GFile
 
+import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.ClassRule
@@ -67,16 +68,13 @@ extends Specification
         """
 
         when:
-        def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments(UPLOAD_TASK_NAME)
-            .withPluginClasspath()
-            .build()
+        def result = executeTask()
 
         then:
         result.task(":${UPLOAD_TASK_NAME}").outcome == TaskOutcome.SUCCESS
         temporaryDriveFolder.hasFile(DESTINATION_NAME)
 
+        verifyHasLink(result.output)
         result.output.contains("File '$buildFile.absolutePath' is uploaded" +
             " to ${temporaryDriveFolder.createdFolder.getName()}" +
             " and named $DESTINATION_NAME.")
@@ -100,17 +98,30 @@ extends Specification
         """
 
         when:
-        def result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments(UPLOAD_TASK_NAME)
-            .withPluginClasspath()
-            .build()
+        def result = executeTask()
 
         then:
         result.task(":${UPLOAD_TASK_NAME}").outcome == TaskOutcome.SUCCESS
         DriveUtils.hasFile(googleClient.drive, secondDir, DESTINATION_NAME)
 
+        verifyHasLink(result.output)
         result.output.contains("File '$buildFile.absolutePath' is uploaded" +
             " to $destinationFolder and named $DESTINATION_NAME.")
+    }
+
+    BuildResult executeTask()
+    {
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.root)
+            .withArguments(UPLOAD_TASK_NAME, '-i')
+            .withPluginClasspath()
+            .build()
+    }
+
+    static void verifyHasLink(
+        String output)
+    {
+        println "output : $output"
+        assert output =~ $/Short link: https://drive.google.com/open\?id=\w+/$
     }
 }

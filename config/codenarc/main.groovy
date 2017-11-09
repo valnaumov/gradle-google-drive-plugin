@@ -192,7 +192,9 @@ ruleset {
     SpaceAfterSwitch 
     SpaceAfterWhile 
     SpaceAroundClosureArrow 
-    SpaceAroundMapEntryColon 
+    SpaceAroundMapEntryColon {
+        characterAfterColonRegex = /\s/
+    }
     SpaceAroundOperator 
     SpaceBeforeClosingBrace 
     SpaceBeforeOpeningBrace 
@@ -253,30 +255,30 @@ ruleset {
     UnusedImport
     
     // rulesets/junit.xml
-    ChainedTest 
-    CoupledTestCase 
-    JUnitAssertAlwaysFails 
-    JUnitAssertAlwaysSucceeds 
-    JUnitFailWithoutMessage 
-    JUnitLostTest 
-    JUnitPublicField 
-    JUnitPublicNonTestMethod 
-    JUnitPublicProperty 
-    JUnitSetUpCallsSuper 
-    JUnitStyleAssertions 
-    JUnitTearDownCallsSuper 
-    JUnitTestMethodWithoutAssert 
-    JUnitUnnecessarySetUp 
-    JUnitUnnecessaryTearDown 
-    JUnitUnnecessaryThrowsException 
-    SpockIgnoreRestUsed 
-    UnnecessaryFail 
-    UseAssertEqualsInsteadOfAssertTrue 
-    UseAssertFalseInsteadOfNegation 
-    UseAssertNullInsteadOfAssertEquals 
-    UseAssertSameInsteadOfAssertTrue 
-    UseAssertTrueInsteadOfAssertEquals 
-    UseAssertTrueInsteadOfNegation 
+    ChainedTest
+    CoupledTestCase
+    JUnitAssertAlwaysFails
+    JUnitAssertAlwaysSucceeds
+    JUnitFailWithoutMessage
+    JUnitLostTest
+    JUnitPublicField
+    JUnitPublicNonTestMethod
+    JUnitPublicProperty
+    JUnitSetUpCallsSuper
+    JUnitStyleAssertions
+    JUnitTearDownCallsSuper
+    JUnitTestMethodWithoutAssert
+    JUnitUnnecessarySetUp
+    JUnitUnnecessaryTearDown
+    JUnitUnnecessaryThrowsException
+    SpockIgnoreRestUsed
+    UnnecessaryFail
+    UseAssertEqualsInsteadOfAssertTrue
+    UseAssertFalseInsteadOfNegation
+    UseAssertNullInsteadOfAssertEquals
+    UseAssertSameInsteadOfAssertTrue
+    UseAssertTrueInsteadOfAssertEquals
+    UseAssertTrueInsteadOfNegation
     
     // rulesets/logging.xml
     LoggerForDifferentClass 

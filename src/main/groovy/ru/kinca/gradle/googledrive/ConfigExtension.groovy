@@ -1,5 +1,7 @@
 package ru.kinca.gradle.googledrive
 
+import com.google.api.services.drive.model.Permission
+
 import org.gradle.api.Project
 import org.gradle.api.provider.PropertyState
 import org.gradle.api.provider.Provider
@@ -21,6 +23,8 @@ class ConfigExtension
 
     private final PropertyState<String> clientSecretPropertyState
 
+    private final PropertyState<Permission> permissionPropertyState
+
     ConfigExtension(
         Project project)
     {
@@ -29,6 +33,7 @@ class ConfigExtension
         filePropertyState = project.property(File)
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
+        permissionPropertyState = project.property(Permission)
     }
 
     String getDestinationFolder()
@@ -109,5 +114,21 @@ class ConfigExtension
     Provider<String> getClientSecretProvider()
     {
         clientSecretPropertyState
+    }
+
+    Permission getPermission()
+    {
+        permissionPropertyState.get()
+    }
+
+    void setPermission(
+        Permission value)
+    {
+        permissionPropertyState.set(value)
+    }
+
+    Provider<Permission> getPermissionProvider()
+    {
+        permissionPropertyState
     }
 }

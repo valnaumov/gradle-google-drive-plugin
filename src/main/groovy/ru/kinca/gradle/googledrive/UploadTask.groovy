@@ -4,6 +4,7 @@ import com.google.api.client.http.FileContent
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File as DriveFile
+import com.google.api.services.drive.model.Permission
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.PropertyState
@@ -21,6 +22,9 @@ import org.gradle.api.tasks.TaskAction
 class UploadTask
 extends DefaultTask
 {
+    protected static final List<Permission> DEFAULT_PERMISSIONS =
+        [new Permission().setType('anyone').setRole('reader')]
+
     private final PropertyState<String> destinationFolderPropertyState
 
     private final PropertyState<String> destinationNamePropertyState
@@ -31,6 +35,8 @@ extends DefaultTask
 
     private final PropertyState<String> clientSecretPropertyState
 
+    private final PropertyState<List<Permission>> permissionsPropertyState
+
     UploadTask()
     {
         destinationFolderPropertyState = project.property(String)
@@ -38,6 +44,14 @@ extends DefaultTask
         filePropertyState = project.property(File)
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
+        permissionsPropertyState = project.property(List)
+
+        setDefaults()
+    }
+
+    void setDefaults()
+    {
+        permissions = DEFAULT_PERMISSIONS
     }
 
     @TaskAction
@@ -74,9 +88,21 @@ extends DefaultTask
         }
 
         DriveFile created = createRequest.execute()
-        logger.quiet("File '${file.absolutePath}' is uploaded to" +
-            " $destinationFolder and named $destinationName." +
-            " Id: ${created.getId()}")
+
+        logger.info('Creating permissions...')
+        permissions.each {
+            googleClient.drive.permissions().create(created.getId(), it)
+        }
+
+        logger.info("File '${file.absolutePath}' is uploaded to" +
+            " $destinationFolder and named $destinationName.")
+        logger.quiet("Short link: ${getLink(created)}")
+    }
+
+    private static String getLink(
+        DriveFile file)
+    {
+        "https://drive.google.com/open?id=${file.getId()}"
     }
 
     @Input
@@ -165,5 +191,23 @@ extends DefaultTask
         Provider<String> value)
     {
         clientSecretPropertyState.set(value)
+    }
+
+    @Input
+    List<Permission> getPermissions()
+    {
+        permissionsPropertyState.get()
+    }
+
+    void setPermissions(
+        List<Permission> value)
+    {
+        permissionsPropertyState.set(value)
+    }
+
+    void setPermissionsProvider(
+        Provider<List<Permission>> value)
+    {
+        permissionsPropertyState.set(value)
     }
 }

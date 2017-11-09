@@ -1,0 +1,38 @@
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+    functionalTest {
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter test
+}
+check.dependsOn integrationTest
+
+task functionalTest(type: Test) {
+    description = 'Runs the functional tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    mustRunAfter integrationTest
+}
+check.dependsOn functionalTest
+
+[ 'codenarcFunctionalTest', 'codenarcIntegrationTest', 'codenarcTest' ].each {
+    "$it"() {
+        configFile = file('config/codenarc/test.groovy')
+    }
+}
+
+gradlePlugin {
+    testSourceSets sourceSets.functionalTest, sourceSets.integrationTest
+}

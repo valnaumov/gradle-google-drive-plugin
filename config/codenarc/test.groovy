@@ -192,7 +192,9 @@ ruleset {
     SpaceAfterSwitch 
     SpaceAfterWhile 
     SpaceAroundClosureArrow 
-    SpaceAroundMapEntryColon 
+    SpaceAroundMapEntryColon {
+        characterAfterColonRegex = /\s/
+    }
     SpaceAroundOperator 
     SpaceBeforeClosingBrace 
     SpaceBeforeOpeningBrace 
@@ -284,7 +286,7 @@ ruleset {
     LoggingSwallowsStacktrace 
     MultipleLoggers 
     PrintStackTrace 
-    Println 
+//    Println
     SystemErrPrint 
     SystemOutPrint 
     
