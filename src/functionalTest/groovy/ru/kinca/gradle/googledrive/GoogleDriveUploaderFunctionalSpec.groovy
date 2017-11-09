@@ -1,7 +1,7 @@
 package ru.kinca.gradle.googledrive
 
 import com.google.api.client.util.store.MemoryDataStoreFactory
-import com.google.api.services.drive.model.File
+import com.google.api.services.drive.model.File as GFile
 
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -12,19 +12,21 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Shared
 import spock.lang.Specification
 
-class GoogleDriveUploaderFunctionalTest
+class GoogleDriveUploaderFunctionalSpec
 extends Specification
 {
-    protected static final String UPLOAD_TASK_NAME = 'uploadToDrive'
-    protected static String DESTINATION_NAME = 'uploaded-build.gradle'
+    private static final String UPLOAD_TASK_NAME = 'uploadToDrive'
+    private static final String DESTINATION_NAME = 'uploaded-build.gradle'
 
-    static final String CLIENT_SECRET = System.getenv('DRIVE_CLIENT_SECRET')
-    static final String CLIENT_ID = System.getenv('DRIVE_CLIENT_ID')
+    private static final String CLIENT_SECRET =
+        System.getenv('DRIVE_CLIENT_SECRET')
+    private static final String CLIENT_ID =
+        System.getenv('DRIVE_CLIENT_ID')
 
     @Rule
     TemporaryFolder testProjectDir = new TemporaryFolder()
 
-    java.io.File buildFile
+    File buildFile
 
     @Shared
     GoogleClient googleClient  = new GoogleClient(CLIENT_ID, CLIENT_SECRET,
@@ -32,14 +34,16 @@ extends Specification
 
     @ClassRule
     @Shared
-    TemporaryDriveFolder temporaryDriveFolder = new TemporaryDriveFolder(googleClient)
+    TemporaryDriveFolder temporaryDriveFolder =
+        new TemporaryDriveFolder(googleClient)
 
     void setupSpec()
     {
         googleClient
     }
 
-    void setup() {
+    void setup()
+    {
         buildFile = testProjectDir.newFile('build.gradle')
         buildFile << """
             plugins {
@@ -48,11 +52,13 @@ extends Specification
         """
     }
 
-    void 'Uploads single file to existing dir'() {
+    void 'Uploads single file to existing dir'()
+    {
         setup:
-        buildFile << """            
+        buildFile << """
             googleDrive {
-                destinationFolder = '${temporaryDriveFolder.createdFolder.getName()}'
+                destinationFolder = '${temporaryDriveFolder.createdFolder
+                    .getName()}'
                 destinationName = '${DESTINATION_NAME}'
                 file = project.file('build.gradle')
                 clientId  = '$CLIENT_ID'
@@ -76,13 +82,14 @@ extends Specification
             " and named $DESTINATION_NAME.")
     }
 
-    void 'Uploads single file and creates missing dirs'() {
+    void 'Uploads single file and creates missing dirs'()
+    {
         setup:
-        File secondDir = temporaryDriveFolder.createFolder('second')
+        GFile secondDir = temporaryDriveFolder.createFolder('second')
         String destinationFolder = temporaryDriveFolder.createdFolder
             .getName() + '/' + secondDir.getName()
 
-        buildFile << """            
+        buildFile << """
             googleDrive {
                 destinationFolder = '$destinationFolder'
                 destinationName = '${DESTINATION_NAME}'
@@ -102,7 +109,7 @@ extends Specification
         then:
         result.task(":${UPLOAD_TASK_NAME}").outcome == TaskOutcome.SUCCESS
         DriveUtils.hasFile(googleClient.drive, secondDir, DESTINATION_NAME)
-        
+
         result.output.contains("File '$buildFile.absolutePath' is uploaded" +
             " to $destinationFolder and named $DESTINATION_NAME.")
     }

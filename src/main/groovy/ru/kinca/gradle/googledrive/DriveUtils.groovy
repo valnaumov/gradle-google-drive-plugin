@@ -80,7 +80,7 @@ final class DriveUtils
                 " and mimeType != '$FOLDER_MIME_TYPE'")
             .execute().getFiles().empty
     }
-    
+
     static File newFolder()
     {
         new File().setMimeType(FOLDER_MIME_TYPE)

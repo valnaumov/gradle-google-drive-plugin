@@ -31,8 +31,14 @@ gradlePlugin {
     testSourceSets sourceSets.functionalTest
 }
 
-codenarc {
-    configFile = file('config/codenarc/codenarc.groovy')
+[ 'codenarcFunctionalTest', 'codenarcTest' ].each {
+    "$it"() {
+        configFile = file('config/codenarc/test.groovy')
+    }
+}
+
+codenarcMain {
+    configFile = file('config/codenarc/main.groovy')
 }
 
 gradlePlugin {

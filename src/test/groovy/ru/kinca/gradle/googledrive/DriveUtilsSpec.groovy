@@ -26,8 +26,8 @@ extends Specification
             .setId('missingFolder2-id')
 
         def folders = [existingFolder, missingFolder1, missingFolder2]
-        def path = folders.collect {it.getName()}
-        List<String> ids = [parentId, *folders.collect {it.getId()}]
+        def path = folders*.getName()
+        List<String> ids = [parentId, *folders*.getId()]
 
         drive.files() >> Stub(Drive.Files) {
             create(_) >> { args ->

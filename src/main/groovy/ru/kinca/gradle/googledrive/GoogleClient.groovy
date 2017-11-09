@@ -37,9 +37,9 @@ class GoogleClient
 
     private final String clientId
     private final String clientSecret
+    private final DataStoreFactory dataStoreFactory
 
     private HttpTransport httpTransport
-    private DataStoreFactory dataStoreFactory
     private Credential credential
 
     private Drive drive

@@ -10,7 +10,7 @@ import org.junit.rules.ExternalResource
 class TemporaryDriveFolder
 extends ExternalResource
 {
-    private GoogleClient googleClient
+    private final GoogleClient googleClient
     private File createdFolder
 
     TemporaryDriveFolder(
@@ -37,7 +37,7 @@ extends ExternalResource
     {
         googleClient.drive.files().delete(createdFolder.getId()).execute()
     }
-    
+
     File getCreatedFolder()
     {
         createdFolder
