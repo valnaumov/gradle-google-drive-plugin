@@ -8,15 +8,28 @@ import spock.lang.Specification
 class DefaultsIntegrationSpec
 extends Specification
 {
+    private static final String DESTINATION_NAME = 'whatever'
+    private static final File FILE_PARAM =
+        new File("./subdir/$DESTINATION_NAME")
+
     void "Default permission is set on existing 'uploadToDrive' task"()
     {
         given:
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply(GoogleDriveUploaderPlugin)
+        def task = project.tasks.getByName('uploadToDrive')
 
-        expect:
-        project.tasks.getByName('uploadToDrive').permissions ==
-            UploadTask.DEFAULT_PERMISSIONS
+        when:
+        project.extensions.configure(GoogleDriveUploaderPlugin.EXTENSION_NAME) {
+            it.file = FILE_PARAM
+        }
+
+        then:
+        with(task) {
+            destinationName == DESTINATION_NAME
+            permissions == UploadTask.DEFAULT_PERMISSIONS
+            file == FILE_PARAM
+        }
     }
 
     void "Default permission is set on new UploadTask"()
@@ -25,8 +38,15 @@ extends Specification
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply(GoogleDriveUploaderPlugin)
 
-        expect:
-        project.task('newUploadToDrive', type: UploadTask).permissions ==
-            UploadTask.DEFAULT_PERMISSIONS
+        when:
+        def task = project.task('newUploadToDrive', type: UploadTask)
+        task.file = FILE_PARAM
+
+        then:
+        with(task) {
+            permissions == UploadTask.DEFAULT_PERMISSIONS
+            file == FILE_PARAM
+            destinationName == DESTINATION_NAME
+        }
     }
 }

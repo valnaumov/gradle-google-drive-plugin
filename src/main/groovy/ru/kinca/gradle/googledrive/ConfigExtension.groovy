@@ -23,7 +23,7 @@ class ConfigExtension
 
     private final PropertyState<String> clientSecretPropertyState
 
-    private final PropertyState<Permission> permissionPropertyState
+    private final PropertyState<List<Permission>> permissionPropertyState
 
     ConfigExtension(
         Project project)
@@ -33,7 +33,7 @@ class ConfigExtension
         filePropertyState = project.property(File)
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
-        permissionPropertyState = project.property(Permission)
+        permissionPropertyState = project.property(List)
     }
 
     String getDestinationFolder()
@@ -116,18 +116,18 @@ class ConfigExtension
         clientSecretPropertyState
     }
 
-    Permission getPermission()
+    List<Permission> getPermissions()
     {
         permissionPropertyState.get()
     }
 
-    void setPermission(
-        Permission value)
+    void setPermissions(
+        List<Permission> value)
     {
         permissionPropertyState.set(value)
     }
 
-    Provider<Permission> getPermissionProvider()
+    Provider<List<Permission>> getPermissionsProvider()
     {
         permissionPropertyState
     }

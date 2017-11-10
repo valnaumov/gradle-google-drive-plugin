@@ -40,18 +40,13 @@ extends DefaultTask
     UploadTask()
     {
         destinationFolderPropertyState = project.property(String)
-        destinationNamePropertyState = project.property(String)
+        destinationNamePropertyState = new PropertyStateWithDefaultValue<>(
+            project.property(String), { file.name } as Provider)
         filePropertyState = project.property(File)
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
-        permissionsPropertyState = project.property(List)
-
-        setDefaults()
-    }
-
-    void setDefaults()
-    {
-        permissions = DEFAULT_PERMISSIONS
+        permissionsPropertyState = new PropertyStateWithDefaultValue<>(
+            project.property(List), DEFAULT_PERMISSIONS)
     }
 
     @TaskAction
@@ -63,9 +58,6 @@ extends DefaultTask
             new FileDataStoreFactory(
                 new File(System.getProperty('user.home'),
                 '.credentials/google-drive-uploader')))
-
-        // Task property is used for incremental build checks.
-        destinationName = destinationName ?: file.name
 
         String destinationFolderId = DriveUtils.makeDirs(
             googleClient.drive, 'root',

@@ -12,13 +12,15 @@ import org.gradle.api.Project
 class GoogleDriveUploaderPlugin
 implements Plugin<Project>
 {
+    protected static final String EXTENSION_NAME = 'googleDrive'
 
+    @SuppressWarnings(['UnnecessaryObjectReferences'])
     @Override
     void apply(
         Project project)
     {
         ConfigExtension config = project.extensions
-            .create('googleDrive', ConfigExtension, project)
+            .create(EXTENSION_NAME, ConfigExtension, project)
 
         project.tasks.create('uploadToDrive', UploadTask) { UploadTask it ->
             it.clientIdProvider = config.clientIdProvider
@@ -26,6 +28,7 @@ implements Plugin<Project>
             it.destinationFolderProvider = config.destinationFolderProvider
             it.destinationNameProvider = config.destinationNameProvider
             it.fileProvider = config.fileProvider
+            it.permissionsProvider = config.permissionsProvider
         }
     }
 
