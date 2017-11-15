@@ -83,9 +83,9 @@ extends Specification
     void 'Uploads single file and creates missing dirs'()
     {
         setup:
-        GFile secondDir = temporaryDriveFolder.createFolder('second')
+        String createdDirName = 'subdir'
         String destinationFolder = temporaryDriveFolder.createdFolder
-            .getName() + '/' + secondDir.getName()
+            .getName() + '/' + createdDirName
 
         buildFile << """
             googleDrive {
@@ -102,7 +102,10 @@ extends Specification
 
         then:
         result.task(":${UPLOAD_TASK_NAME}").outcome == TaskOutcome.SUCCESS
-        DriveUtils.hasFile(googleClient.drive, secondDir, DESTINATION_NAME)
+
+        GFile createdDir = DriveUtils.findInFolder(googleClient.drive,
+            temporaryDriveFolder.createdFolder, createdDirName).first()
+        DriveUtils.hasFile(googleClient.drive, createdDir, DESTINATION_NAME)
 
         verifyHasLink(result.output)
         result.output.contains("File '$buildFile.absolutePath' is uploaded" +

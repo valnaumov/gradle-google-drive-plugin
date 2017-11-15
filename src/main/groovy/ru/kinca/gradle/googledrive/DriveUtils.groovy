@@ -2,7 +2,6 @@ package ru.kinca.gradle.googledrive
 
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
-
 /**
  * Useful utilities for {@link Drive}.
  *
@@ -66,19 +65,70 @@ final class DriveUtils
         }
     }
 
-    static boolean hasFile(
+    /**
+     * Searches for a file (a folder or a regular file) in a folder specified
+     * by its id.
+     *
+     * @param drive
+     * @param parentId
+     *        id of the containing folder.
+     * @param childName
+     *        name of the file to search for.
+     * @return list of files found.
+     */
+    static List<File> findInFolder(
         Drive drive,
-        File folder,
-        String fileName)
+        String parentId,
+        String childName)
     {
-        !drive.files().list()
+        String query = "'$parentId' in parents" +
+            " and not trashed" +
+            " and name = '$childName'"
+        drive.files().list()
             .setSpaces(DEFAULT_SPACES)
             .setCorpora(DEFAULT_COPRORA)
-            .setQ("name = '$fileName'" +
-                " and '${folder.getId()}' in parents" +
-                " and not trashed" +
-                " and mimeType != '$FOLDER_MIME_TYPE'")
-            .execute().getFiles().empty
+            .setFields('files(id, name)')
+            .setQ(query)
+            .execute()
+            .getFiles()
+    }
+
+    /**
+     * Searches for a file (a folder or a regular file) in a folder specified
+     * by its id.
+     *
+     * @param drive
+     * @param parent
+     *        containing folder.
+     * @param childName
+     *        name of the file to search for.
+     * @return list of files found.
+     */
+    static List<File> findInFolder(
+        Drive drive,
+        File parent,
+        String childName)
+    {
+        findInFolder(drive, parent.getId(), childName)
+    }
+
+    /**
+     * Tests whether a given folder contains any regular files with name
+     * {@code fileName}.
+     *
+     * @param drive
+     * @param parent
+     * @param childName
+     * @return
+     */
+    static boolean hasFile(
+        Drive drive,
+        File parent,
+        String childName)
+    {
+        findInFolder(drive, parent.getId(), childName).any {
+            it.getMimeType() != FOLDER_MIME_TYPE
+        }
     }
 
     static File newFolder()
