@@ -13,6 +13,7 @@ class GoogleDriveUploaderPlugin
 implements Plugin<Project>
 {
     protected static final String EXTENSION_NAME = 'googleDrive'
+    protected static final String DEFAULT_TASK_NAME = 'uploadToDrive'
 
     @SuppressWarnings(['UnnecessaryObjectReferences'])
     @Override
@@ -22,7 +23,7 @@ implements Plugin<Project>
         ConfigExtension config = project.extensions
             .create(EXTENSION_NAME, ConfigExtension, project)
 
-        project.tasks.create('uploadToDrive', UploadTask) { UploadTask it ->
+        project.tasks.create(DEFAULT_TASK_NAME, UploadTask) {UploadTask it ->
             it.clientIdProvider = config.clientIdProvider
             it.clientSecretProvider = config.clientSecretProvider
             it.destinationFolderProvider = config.destinationFolderProvider

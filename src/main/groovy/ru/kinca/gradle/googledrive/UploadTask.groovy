@@ -41,12 +41,12 @@ extends DefaultTask
     {
         destinationFolderPropertyState = project.property(String)
         destinationNamePropertyState = new PropertyStateWithDefaultValue<>(
-            project.property(String), { file.name } as Provider)
+            { file.name })
         filePropertyState = project.property(File)
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
-        permissionsPropertyState = new PropertyStateWithDefaultValue<>(
-            project.property(List), DEFAULT_PERMISSIONS)
+        permissionsPropertyState = new PropertyStateWithDefaultValue<
+            List<Permission>>(DEFAULT_PERMISSIONS)
     }
 
     @TaskAction

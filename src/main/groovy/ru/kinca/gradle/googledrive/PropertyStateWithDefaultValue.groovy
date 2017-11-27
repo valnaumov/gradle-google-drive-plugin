@@ -1,31 +1,42 @@
 package ru.kinca.gradle.googledrive
 
+import org.gradle.api.internal.provider.DefaultPropertyState
 import org.gradle.api.provider.PropertyState
-import org.gradle.api.provider.Provider
 
 /**
+ * Property state that is instantiated with a default value. If no value was set
+ * explicitly, the default one is used. The default value may be null.
+ *
  * @author Valentin Naumov
  */
 class PropertyStateWithDefaultValue<T>
 {
-    private final Provider<T> defaultValueProvider
+    private static final NULL_PROVIDER = { null }
+
+    private final Closure<T> defaultValueProvider
 
     @Delegate
     private final PropertyState<T> delegate
 
-    PropertyStateWithDefaultValue(
-        PropertyState<T> delegate,
-        T defaultValue)
+    /**
+     * Creates the property state with default value of {@code null}.
+     */
+    PropertyStateWithDefaultValue()
     {
-        this(delegate, { defaultValue } as Provider<T>)
+        this(NULL_PROVIDER)
     }
 
     PropertyStateWithDefaultValue(
-        PropertyState<T> delegate,
-        Provider<T> defaultValueProvider)
+        T defaultValue)
+    {
+        this({ defaultValue })
+    }
+
+    PropertyStateWithDefaultValue(
+        Closure<T> defaultValueProvider)
     {
         this.defaultValueProvider = defaultValueProvider
-        this.delegate = delegate
+        this.delegate = new DefaultPropertyState()
     }
 
     /**
@@ -37,7 +48,7 @@ class PropertyStateWithDefaultValue<T>
     @Override
     T get()
     {
-        delegate.present ? delegate.get() : defaultValueProvider.get()
+        delegate.present ? delegate.get() : defaultValueProvider.call()
     }
 
     /**
@@ -50,6 +61,6 @@ class PropertyStateWithDefaultValue<T>
     @Override
     T getOrNull()
     {
-        delegate.present ? delegate.get() : defaultValueProvider.get()
+        delegate.present ? delegate.get() : defaultValueProvider.call()
     }
 }

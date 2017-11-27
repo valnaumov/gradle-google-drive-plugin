@@ -127,7 +127,9 @@ ruleset {
     DuplicateListLiteral 
     DuplicateMapLiteral 
     DuplicateNumberLiteral 
-    DuplicateStringLiteral 
+    DuplicateStringLiteral {
+        doNotApplyToClassNames = '*Spec'
+    }
     
     // rulesets/enhanced.xml
 //    CloneWithoutCloneable
