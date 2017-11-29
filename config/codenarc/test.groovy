@@ -300,6 +300,7 @@ ruleset {
     ConfusingMethodName 
     FactoryMethodName {
         regex = /build.*/
+        doNotApplyToClassNames = '*Spec'
     }
     FieldName 
     InterfaceName 

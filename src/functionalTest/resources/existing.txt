@@ -1,0 +1,1 @@
+This file is assumed to exist in tests that check update functionality.

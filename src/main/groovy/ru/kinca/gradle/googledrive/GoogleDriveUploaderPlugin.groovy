@@ -23,13 +23,14 @@ implements Plugin<Project>
         ConfigExtension config = project.extensions
             .create(EXTENSION_NAME, ConfigExtension, project)
 
-        project.tasks.create(DEFAULT_TASK_NAME, UploadTask) {UploadTask it ->
+        project.tasks.create(DEFAULT_TASK_NAME, UploadTask) { UploadTask it ->
             it.clientIdProvider = config.clientIdProvider
             it.clientSecretProvider = config.clientSecretProvider
             it.destinationFolderProvider = config.destinationFolderProvider
             it.destinationNameProvider = config.destinationNameProvider
             it.fileProvider = config.fileProvider
             it.permissionsProvider = config.permissionsProvider
+            it.updateIfExistsProvider = config.updateIfExistsProvider
         }
     }
 

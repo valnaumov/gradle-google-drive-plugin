@@ -2,11 +2,12 @@ package ru.kinca.gradle.googledrive
 
 import com.google.api.client.http.FileContent
 import com.google.api.client.util.store.FileDataStoreFactory
-import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveRequest
 import com.google.api.services.drive.model.File as DriveFile
 import com.google.api.services.drive.model.Permission
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.provider.PropertyState
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
@@ -25,6 +26,8 @@ extends DefaultTask
     protected static final List<Permission> DEFAULT_PERMISSIONS =
         [new Permission().setType('anyone').setRole('reader')]
 
+    protected static final Boolean DEFAULT_UPDATE_IF_EXISTS = true
+
     private final PropertyState<String> destinationFolderPropertyState
 
     private final PropertyState<String> destinationNamePropertyState
@@ -37,6 +40,8 @@ extends DefaultTask
 
     private final PropertyState<List<Permission>> permissionsPropertyState
 
+    private final PropertyState<Boolean> updateIfExistsPropertyState
+
     UploadTask()
     {
         destinationFolderPropertyState = project.property(String)
@@ -47,6 +52,10 @@ extends DefaultTask
         clientSecretPropertyState = project.property(String)
         permissionsPropertyState = new PropertyStateWithDefaultValue<
             List<Permission>>(DEFAULT_PERMISSIONS)
+
+        // Primitive properties are assigned default values, we need to override
+        updateIfExistsPropertyState = new PropertyStateWithDefaultValue<>(
+            DEFAULT_UPDATE_IF_EXISTS)
     }
 
     @TaskAction
@@ -68,9 +77,37 @@ extends DefaultTask
         driveFile.setParents([destinationFolderId])
 
         FileContent content = new FileContent('application/octet-stream', file)
-        Drive.Files.Create createRequest = googleClient.drive.files()
-            .create(driveFile, content)
-        createRequest.getMediaHttpUploader().with {
+        DriveRequest<DriveFile> modificationRequest
+
+        List<DriveFile> existingDestinationFiles = DriveUtils.findInFolder(
+            googleClient.drive, destinationFolderId, destinationName)
+        if (existingDestinationFiles)
+        {
+            if (updateIfExists)
+            {
+                // Update the most recent, if the are many with the same name
+                DriveFile updatedFile = existingDestinationFiles
+                    .toSorted { it.getModifiedTime() }.first()
+
+                logger.info("File with name '${destinationName}' already" +
+                    " exists, id: ${updatedFile.getId()}. Updating...")
+                modificationRequest = googleClient.drive.files().update(
+                    updatedFile.getId(), null, content)
+            }
+            else
+            {
+                throw new GradleException('Remote file(s) already exists,' +
+                    " id: ${existingDestinationFiles*.getId()}")
+            }
+        }
+        else
+        {
+            logger.info('Creating file...')
+            modificationRequest = googleClient.drive.files()
+                .create(driveFile, content)
+        }
+
+        modificationRequest.getMediaHttpUploader().with {
             progressListener = {
                 logger.info('Uploaded: {} {}[bytes]({})',
                     it.uploadState,
@@ -79,16 +116,16 @@ extends DefaultTask
             }
         }
 
-        DriveFile created = createRequest.execute()
+        DriveFile updated = modificationRequest.execute()
 
-        logger.info('Creating permissions...')
+        logger.debug('Creating permissions...')
         permissions.each {
-            googleClient.drive.permissions().create(created.getId(), it)
+            googleClient.drive.permissions().create(updated.getId(), it)
         }
 
-        logger.info("File '${file.absolutePath}' is uploaded to" +
-            " $destinationFolder and named $destinationName.")
-        logger.quiet("Short link: ${getLink(created)}")
+        logger.info("File '${file.canonicalPath}' is uploaded to" +
+            " '$destinationFolder' and named '$destinationName'.")
+        logger.quiet("Short link: ${getLink(updated)}")
     }
 
     private static String getLink(
@@ -201,5 +238,23 @@ extends DefaultTask
         Provider<List<Permission>> value)
     {
         permissionsPropertyState.set(value)
+    }
+
+    @Input
+    Boolean getUpdateIfExists()
+    {
+        updateIfExistsPropertyState.get()
+    }
+
+    void setUpdateIfExists(
+        Boolean value)
+    {
+        updateIfExistsPropertyState.set(value)
+    }
+
+    void setUpdateIfExistsProvider(
+        Provider<Boolean> value)
+    {
+        updateIfExistsPropertyState.set(value)
     }
 }

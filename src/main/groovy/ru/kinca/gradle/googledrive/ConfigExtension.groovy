@@ -25,6 +25,8 @@ class ConfigExtension
 
     private final PropertyState<List<Permission>> permissionPropertyState
 
+    private final PropertyState<Boolean> updateIfExistsPropertyState
+
     ConfigExtension(
         Project project)
     {
@@ -34,6 +36,8 @@ class ConfigExtension
         clientIdPropertyState = project.property(String)
         clientSecretPropertyState = project.property(String)
         permissionPropertyState = project.property(List)
+
+        updateIfExistsPropertyState = new PropertyStateWithDefaultValue<>()
     }
 
     String getDestinationFolder()
@@ -130,5 +134,21 @@ class ConfigExtension
     Provider<List<Permission>> getPermissionsProvider()
     {
         permissionPropertyState
+    }
+
+    Boolean getUpdateIfExists()
+    {
+        updateIfExistsPropertyState.get()
+    }
+
+    void setUpdateIfExists(
+        Boolean value)
+    {
+        updateIfExistsPropertyState.set(value)
+    }
+
+    Provider<Boolean> getUpdateIfExistsProvider()
+    {
+        updateIfExistsPropertyState
     }
 }

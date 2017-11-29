@@ -14,8 +14,9 @@ extends Specification
     private static final File FILE = new File("./subdir/$DESTINATION_NAME")
     private static final List<Permission> PERMISSIONS =
         [new Permission().setRole('a role')]
+    private static final Boolean UPDATE_IF_EXISTS = false
 
-    void "Default permission is set on existing 'uploadToDrive' task"()
+    void "Defaults are set on existing 'uploadToDrive' task"()
     {
         given:
         Project project = ProjectBuilder.builder().build()
@@ -33,10 +34,11 @@ extends Specification
             destinationName == DESTINATION_NAME
             permissions == UploadTask.DEFAULT_PERMISSIONS
             file == FILE
+            updateIfExists == UploadTask.DEFAULT_UPDATE_IF_EXISTS
         }
     }
 
-    void "Default permission is set on new UploadTask"()
+    void "Defaults are set on new UploadTask"()
     {
         given:
         Project project = ProjectBuilder.builder().build()
@@ -51,6 +53,7 @@ extends Specification
             permissions == UploadTask.DEFAULT_PERMISSIONS
             file == FILE
             destinationName == DESTINATION_NAME
+            updateIfExists == UploadTask.DEFAULT_UPDATE_IF_EXISTS
         }
     }
 
@@ -67,6 +70,7 @@ extends Specification
             it.file = FILE
             it.permissions = PERMISSIONS
             it.destinationName = DESTINATION_NAME
+            it.updateIfExists = UPDATE_IF_EXISTS
         }
 
         then:
@@ -74,6 +78,7 @@ extends Specification
             destinationName == DESTINATION_NAME
             permissions == PERMISSIONS
             file == FILE
+            updateIfExists == UPDATE_IF_EXISTS
         }
     }
 
@@ -90,6 +95,7 @@ extends Specification
             file = FILE
             permissions = PERMISSIONS
             destinationName = DESTINATION_NAME
+            updateIfExists = UPDATE_IF_EXISTS
         }
 
         then:
@@ -97,6 +103,7 @@ extends Specification
             destinationName == DESTINATION_NAME
             permissions == PERMISSIONS
             file == FILE
+            updateIfExists == UPDATE_IF_EXISTS
         }
     }
 }
