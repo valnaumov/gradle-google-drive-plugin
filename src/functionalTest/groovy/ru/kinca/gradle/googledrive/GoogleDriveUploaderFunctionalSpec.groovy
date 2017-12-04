@@ -11,7 +11,7 @@ import org.junit.Rule
 import spock.lang.Shared
 
 class GoogleDriveUploaderFunctionalSpec
-extends FunctionalSpec
+extends AbstractFunctionalSpec
 {
     private static final String DESTINATION_NAME = 'uploaded.txt'
 

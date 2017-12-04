@@ -10,7 +10,7 @@ import spock.lang.Specification
 /**
  * @author Valentin Naumov
  */
-class FunctionalSpec
+abstract class AbstractFunctionalSpec
 extends Specification
 {
     @Rule
