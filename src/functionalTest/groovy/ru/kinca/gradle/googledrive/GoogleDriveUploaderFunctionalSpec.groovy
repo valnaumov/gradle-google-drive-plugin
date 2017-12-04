@@ -180,7 +180,8 @@ extends AbstractFunctionalSpec
         String output)
     {
         println "output : $output"
-        assert output =~ $/Short link: https://drive.google.com/open\?id=\w+/$
+        assert output =~
+            $/Google Drive short link: https://drive.google.com/open\?id=\w+/$
     }
 
     /**

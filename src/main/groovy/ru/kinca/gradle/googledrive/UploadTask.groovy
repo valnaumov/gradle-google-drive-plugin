@@ -125,7 +125,7 @@ extends DefaultTask
 
         logger.info("File '${file.canonicalPath}' is uploaded to" +
             " '$destinationFolder' and named '$destinationName'.")
-        logger.quiet("Short link: ${getLink(updated)}")
+        logger.quiet("Google Drive short link: ${getLink(updated)}")
     }
 
     private static String getLink(
