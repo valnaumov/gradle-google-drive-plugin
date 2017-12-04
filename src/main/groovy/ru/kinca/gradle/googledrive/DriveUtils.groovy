@@ -14,7 +14,7 @@ final class DriveUtils
     private static final String FOLDER_MIME_TYPE =
         'application/vnd.google-apps.folder'
     private static final String DEFAULT_SPACES = 'drive'
-    private static final String DEFAULT_COPRORA = 'user'
+    private static final String DEFAULT_CORPORA = 'user'
 
     private DriveUtils()
     {
@@ -39,7 +39,7 @@ final class DriveUtils
         path.inject(parentId) { String currentParent, currName ->
             List<File> existingFolders = drive.files().list()
                 .setSpaces(DEFAULT_SPACES)
-                .setCorpora(DEFAULT_COPRORA)
+                .setCorpora(DEFAULT_CORPORA)
                 .setQ("name = '$currName'" +
                     " and '$currentParent' in parents" +
                     " and not trashed" +
@@ -87,7 +87,7 @@ final class DriveUtils
             " and name = '$childName'"
         drive.files().list()
             .setSpaces(DEFAULT_SPACES)
-            .setCorpora(DEFAULT_COPRORA)
+            .setCorpora(DEFAULT_CORPORA)
             .setFields('files(id, name)')
             .setQ(query)
             .execute()
