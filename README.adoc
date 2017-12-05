@@ -1,0 +1,97 @@
+This plugin allows to upload a file to your Google Drive folder. Currently it
+does not support downloading of files and uploading to Team drives and the
+domain corpus, but you are welcome to show your interest in the
+https://github.com/valnaumov/gradle-google-drive-plugin/issues/1[corresponding
+issue] or to provide a PR.
+
+= Obtaining credentials
+. Go to https://console.developers.google.com/flows/enableapi?apiid=drive[Google
+  API Console] and create a project.
+. Go to https://console.developers.google.com/apis/credentials[Credentials
+section] of just created project.
+. Choose Create credentials → OAuth client id → Other. Copy the id and
+the secret.
+
+You have to provide the values to an extension with name `googleDrive` inside
+the build script. You may do this anyway you like: get from an environment
+variable, system property if you'd like, or from a
+https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties[`gradle.properties`],
+which is the most convenient to me.
+
+= Usage
+
+By default, the plugin applies a task named 'uploadToDrive' which expects an
+extension named `googleDrive` to be defined, like so:
+
+```
+plugins {
+    id 'ru.kinca.google-drive-uploader' version '1.0.0'
+}
+
+googleDrive {
+    // Missing folders will be created
+    destinationFolder = 'test/upload'
+
+    // If not specified, simple file name is used
+    destinationName = 'cute_picture.jpg'
+
+    file = file('c:\\Users\\User\\Pictures\\kittens.jpg')
+
+    // Default is true
+    updateIfExists = false
+
+    // Do not put those directly into the build file
+    clientId  = '<YOUR CLIENT ID>'
+    clientSecret = '<YOUR CLIENT SECRET>'
+}
+```
+
+NOTE: If no permissions were set explicitly, the file will be publicly shared
+for reading.
+
+Execute `uploadToDrive` task to perform the upload.
+
+When updating an existing file, the specified permissions will be set, but
+existing ones would stay untouched.
+
+== Setting custom permissions
+```
+import com.google.api.services.drive.model.Permission
+
+googleDrive {
+    // Other properties configured...
+    permissions = [new Permission()
+                       .setType('user')
+                       .setEmailAddress('example@gmail.com')
+                       .setRole('writer')]
+}
+```
+
+= Example
+
+.settings.gradle
+----
+rootProject.name = 'example-app'
+----
+
+.build.gradle
+----
+plugins {
+    id 'ru.kinca.google-drive-uploader' version '1.0.0'
+    id 'application'
+}
+
+mainClassName = 'ru.kinca.example.App'
+
+googleDrive {
+    destinationFolder = 'myapp/distributions'
+
+    file = files(distZip).singleFile
+    clientId = driveClientId
+    clientSecret = driveClientSecret
+}
+uploadToDrive.dependsOn distZip
+----
+
+The application distribution will be packed to a ZIP-file and uploaded to
+`myapp/distributions/example-app.zip` and shared publicly for reading.
