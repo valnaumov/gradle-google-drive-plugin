@@ -1,5 +1,6 @@
 package ru.kinca.gradle.googledrive
 
+import com.google.api.client.googleapis.batch.BatchRequest
 import com.google.api.client.http.FileContent
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.drive.DriveRequest
@@ -13,7 +14,6 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
-
 /**
  * Task that uploads specified file to Google Drive. Opens a browser to
  * authorize, if was not authorized before.
@@ -119,9 +119,13 @@ extends DefaultTask
         DriveFile updated = modificationRequest.execute()
 
         logger.debug('Creating permissions...')
+        BatchRequest permissionsBatchRequest = googleClient.drive.batch()
         permissions.each {
             googleClient.drive.permissions().create(updated.getId(), it)
+                .queue(permissionsBatchRequest, new SimpleJsonBatchCallBack(
+                'Could not update permissions'))
         }
+        permissionsBatchRequest.execute()
 
         logger.info("File '${file.canonicalPath}' is uploaded to" +
             " '$destinationFolder' and named '$destinationName'.")
