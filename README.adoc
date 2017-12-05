@@ -23,7 +23,8 @@ which is the most convenient to me.
 By default, the plugin applies a task named 'uploadToDrive' which expects an
 extension named `googleDrive` to be defined, like so:
 
-```
+[source,groovy]
+----
 plugins {
     id 'ru.kinca.google-drive-uploader' version '1.0.0'
 }
@@ -44,7 +45,7 @@ googleDrive {
     clientId  = '<YOUR CLIENT ID>'
     clientSecret = '<YOUR CLIENT SECRET>'
 }
-```
+----
 
 NOTE: If no permissions were set explicitly, the file will be publicly shared
 for reading.
@@ -55,7 +56,9 @@ When updating an existing file, the specified permissions will be set, but
 existing ones would stay untouched.
 
 == Setting custom permissions
-```
+
+[source,groovy]
+----
 import com.google.api.services.drive.model.Permission
 
 googleDrive {
@@ -65,16 +68,18 @@ googleDrive {
                        .setEmailAddress('example@gmail.com')
                        .setRole('writer')]
 }
-```
+----
 
 = Example
 
 .settings.gradle
+[source,groovy]
 ----
 rootProject.name = 'example-app'
 ----
 
 .build.gradle
+[source,groovy]
 ----
 plugins {
     id 'ru.kinca.google-drive-uploader' version '1.0.0'
