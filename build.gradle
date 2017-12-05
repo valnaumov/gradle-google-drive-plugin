@@ -1,11 +1,12 @@
 plugins {
+    id 'codenarc'
+    id 'com.gradle.plugin-publish' version '0.9.9'
 	id 'groovy'
 	id 'java-gradle-plugin'
-    id 'codenarc'
     id 'maven-publish'
 }
 
-version = '0.0.0'
+version = '1.0.0'
 group = 'ru.kinca.gradle'
 
 repositories {
@@ -18,11 +19,24 @@ codenarcMain {
     configFile = file('config/codenarc/main.groovy')
 }
 
+String pluginId = 'ru.kinca.google-drive-uploader'
 gradlePlugin {
     plugins {
         googleDriveUploader {
-            id = 'ru.kinca.google-drive-uploader'
+            id = pluginId
             implementationClass = 'ru.kinca.gradle.googledrive.GoogleDriveUploaderPlugin'
+        }
+    }
+}
+pluginBundle {
+    website = 'https://github.com/valnaumov/gradle-google-drive-plugin'
+    vcsUrl = 'git@github.com:valnaumov/gradle-google-drive-plugin.git'
+    plugins {
+        googleDriveUploader {
+            id = pluginId
+            displayName = 'Uploads files to Google Drive'
+            description = 'A plugin that lets you upload/backup files to Google Drive'
+            tags = ['google', 'drive', 'googleDrive', 'backup']
         }
     }
 }
