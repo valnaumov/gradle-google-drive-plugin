@@ -44,6 +44,12 @@ googleDrive {
     // Do not put those directly into the build file
     clientId  = '<YOUR CLIENT ID>'
     clientSecret = '<YOUR CLIENT SECRET>'
+
+    // Location where Google Drive client's credentials will be stored. You may
+    // want to have a separate dir for each project.
+    // Default is `${user.home}/.credentials/google-drive-uploader`, i.e.
+    // shared between all projects.
+    credentialsDir = file('.gradle/google-drive-uploader/credentials/')
 }
 ----
 

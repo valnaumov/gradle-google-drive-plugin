@@ -13,6 +13,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -43,6 +44,8 @@ extends DefaultTask
 
     private final Property<Boolean> updateIfExistsProperty
 
+    private final Property<File> credentialsDirProperty
+
     UploadTask()
     {
         destinationFolderProperty = project.objects.property(String)
@@ -56,6 +59,8 @@ extends DefaultTask
         // override
         updateIfExistsProperty = project.objects.property(Boolean)
         updateIfExistsProperty.set(null as Boolean)
+
+        credentialsDirProperty = project.objects.property(File)
     }
 
     @TaskAction
@@ -64,9 +69,7 @@ extends DefaultTask
         GoogleClient googleClient = new GoogleClient(
             clientId,
             clientSecret,
-            new FileDataStoreFactory(
-                new File(System.getProperty('user.home'),
-                '.credentials/google-drive-uploader')))
+            new FileDataStoreFactory(credentialsDir))
 
         String destinationFolderId = DriveUtils.makeDirs(
             googleClient.drive, 'root',
@@ -260,5 +263,25 @@ extends DefaultTask
         Provider<Boolean> value)
     {
         updateIfExistsProperty.set(value)
+    }
+
+    @Internal
+    File getCredentialsDir()
+    {
+        credentialsDirProperty.present ? credentialsDirProperty.get()
+            : new File(System.getProperty('user.home'),
+                '.credentials/google-drive-uploader')
+    }
+
+    void setCredentialsDir(
+        File value)
+    {
+        credentialsDirProperty.set(value)
+    }
+
+    void setCredentialsDirProvider(
+        Provider<File> value)
+    {
+        credentialsDirProperty.set(value)
     }
 }

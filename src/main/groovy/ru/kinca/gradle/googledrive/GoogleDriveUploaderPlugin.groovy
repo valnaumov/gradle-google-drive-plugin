@@ -31,6 +31,7 @@ implements Plugin<Project>
             it.fileProvider = config.fileProvider
             it.permissionsProvider = config.permissionsProvider
             it.updateIfExistsProvider = config.updateIfExistsProvider
+            it.credentialsDirProvider = config.credentialsDirProvider
         }
     }
 

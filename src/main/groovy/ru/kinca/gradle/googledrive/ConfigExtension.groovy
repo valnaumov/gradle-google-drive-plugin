@@ -27,6 +27,8 @@ class ConfigExtension
 
     private final Property<Boolean> updateIfExistsProperty
 
+    private final Property<File> credentialsDirProperty
+
     ConfigExtension(
         Project project)
     {
@@ -41,6 +43,8 @@ class ConfigExtension
         // override
         updateIfExistsProperty = project.objects.property(Boolean)
         updateIfExistsProperty.set(null as Boolean)
+
+        credentialsDirProperty = project.objects.property(File)
     }
 
     String getDestinationFolder()
@@ -153,5 +157,30 @@ class ConfigExtension
     Provider<Boolean> getUpdateIfExistsProvider()
     {
         updateIfExistsProperty
+    }
+
+    File getCredentialsDir()
+    {
+        credentialsDirProperty.get()
+    }
+
+    /**
+     * Sets the location where Google Drive client's credentials will be stored.
+     * You may want to have a separate dir for each project.
+     *
+     * Default is <code>${user.home}/.credentials/google-drive-uploader'</code>.
+     *
+     * @param value
+     *        credentials directory.
+     */
+    void setCredentialsDir(
+        File value)
+    {
+        credentialsDirProperty.set(value)
+    }
+
+    Provider<File> getCredentialsDirProvider()
+    {
+        credentialsDirProperty
     }
 }

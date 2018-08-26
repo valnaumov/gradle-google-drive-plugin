@@ -15,6 +15,7 @@ extends Specification
     private static final List<Permission> PERMISSIONS =
         [new Permission().setRole('a role')]
     private static final Boolean UPDATE_IF_EXISTS = false
+    private static final File CREDENTIALS_DIR = new File('.credentials')
 
     void "Defaults are set on existing 'uploadToDrive' task"()
     {
@@ -35,6 +36,8 @@ extends Specification
             permissions == UploadTask.DEFAULT_PERMISSIONS
             file == FILE
             updateIfExists == UploadTask.DEFAULT_UPDATE_IF_EXISTS
+            credentialsDir == new File(System.getProperty('user.home'),
+                '.credentials/google-drive-uploader')
         }
     }
 
@@ -54,6 +57,8 @@ extends Specification
             file == FILE
             destinationName == DESTINATION_NAME
             updateIfExists == UploadTask.DEFAULT_UPDATE_IF_EXISTS
+            credentialsDir == new File(System.getProperty('user.home'),
+                '.credentials/google-drive-uploader')
         }
     }
 
@@ -71,6 +76,7 @@ extends Specification
             it.permissions = PERMISSIONS
             it.destinationName = DESTINATION_NAME
             it.updateIfExists = UPDATE_IF_EXISTS
+            it.credentialsDir = CREDENTIALS_DIR
         }
 
         then:
@@ -79,6 +85,7 @@ extends Specification
             permissions == PERMISSIONS
             file == FILE
             updateIfExists == UPDATE_IF_EXISTS
+            credentialsDir == CREDENTIALS_DIR
         }
     }
 
@@ -96,6 +103,7 @@ extends Specification
             permissions = PERMISSIONS
             destinationName = DESTINATION_NAME
             updateIfExists = UPDATE_IF_EXISTS
+            credentialsDir = CREDENTIALS_DIR
         }
 
         then:
@@ -104,6 +112,7 @@ extends Specification
             permissions == PERMISSIONS
             file == FILE
             updateIfExists == UPDATE_IF_EXISTS
+            credentialsDir == CREDENTIALS_DIR
         }
     }
 }
