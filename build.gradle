@@ -62,9 +62,9 @@ dependencies {
 
 	compile localGroovy()
 	compile gradleApi()
-    compile 'com.google.apis:google-api-services-drive:v3-rev90-1.23.0'
-    compile 'com.google.api-client:google-api-client:1.23.0'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    compile 'com.google.apis:google-api-services-drive:v3-rev127-1.24.1'
+    compile 'com.google.api-client:google-api-client:1.25.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.25.0'
     testCompile spockDependency
     testRuntime 'cglib:cglib-nodep:3.2.5'
     testRuntime 'org.objenesis:objenesis:1.3'
