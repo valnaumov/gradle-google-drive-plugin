@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '1.0.0'
+version = '1.0.1-SNAPSHOT'
 group = 'ru.kinca.gradle'
 
 repositories {
@@ -46,6 +46,10 @@ tasks.withType(GroovyCompile) {
 }
 compileGroovy {
     groovyOptions.configurationScript = file('config/compiler-customizer.groovy')
+}
+
+wrapper {
+    gradleVersion = '4.9'
 }
 
 configurations.all {
