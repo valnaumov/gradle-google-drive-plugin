@@ -101,7 +101,7 @@ ruleset {
     
     // rulesets/design.xml
     AbstractClassWithPublicConstructor 
-    AbstractClassWithoutAbstractMethod 
+//    AbstractClassWithoutAbstractMethod
     AssignmentToStaticFieldFromInstanceMethod 
     BooleanMethodReturnsNull 
     BuilderMethodWithSideEffects 
