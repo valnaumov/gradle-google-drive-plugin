@@ -9,11 +9,12 @@ import com.google.api.services.drive.model.Permission
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.provider.PropertyState
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
+
 /**
  * Task that uploads specified file to Google Drive. Opens a browser to
  * authorize, if was not authorized before.
@@ -28,34 +29,33 @@ extends DefaultTask
 
     protected static final Boolean DEFAULT_UPDATE_IF_EXISTS = true
 
-    private final PropertyState<String> destinationFolderPropertyState
+    private final Property<String> destinationFolderProperty
 
-    private final PropertyState<String> destinationNamePropertyState
+    private final Property<String> destinationNameProperty
 
-    private final PropertyState<File> filePropertyState
+    private final Property<File> fileProperty
 
-    private final PropertyState<String> clientIdPropertyState
+    private final Property<String> clientIdProperty
 
-    private final PropertyState<String> clientSecretPropertyState
+    private final Property<String> clientSecretProperty
 
-    private final PropertyState<List<Permission>> permissionsPropertyState
+    private final Property<List<Permission>> permissionsProperty
 
-    private final PropertyState<Boolean> updateIfExistsPropertyState
+    private final Property<Boolean> updateIfExistsProperty
 
     UploadTask()
     {
-        destinationFolderPropertyState = project.property(String)
-        destinationNamePropertyState = new PropertyStateWithDefaultValue<>(
-            { file.name })
-        filePropertyState = project.property(File)
-        clientIdPropertyState = project.property(String)
-        clientSecretPropertyState = project.property(String)
-        permissionsPropertyState = new PropertyStateWithDefaultValue<
-            List<Permission>>(DEFAULT_PERMISSIONS)
+        destinationFolderProperty = project.objects.property(String)
+        destinationNameProperty = project.objects.property(String)
+        fileProperty = project.objects.property(File)
+        clientIdProperty = project.objects.property(String)
+        clientSecretProperty = project.objects.property(String)
+        permissionsProperty = project.objects.property(List)
 
-        // Primitive properties are assigned default values, we need to override
-        updateIfExistsPropertyState = new PropertyStateWithDefaultValue<>(
-            DEFAULT_UPDATE_IF_EXISTS)
+        // Wrapper type properties are assigned default values, we need to
+        // override
+        updateIfExistsProperty = project.objects.property(Boolean)
+        updateIfExistsProperty.set(null as Boolean)
     }
 
     @TaskAction
@@ -141,124 +141,124 @@ extends DefaultTask
     @Input
     String getDestinationFolder()
     {
-        destinationFolderPropertyState.get()
+        destinationFolderProperty.get()
     }
 
     void setDestinationFolder(
         String value)
     {
-        destinationFolderPropertyState.set(value)
+        destinationFolderProperty.set(value)
     }
 
     void setDestinationFolderProvider(
         Provider<String> value)
     {
-        destinationFolderPropertyState.set(value)
+        destinationFolderProperty.set(value)
     }
 
     @Input
     String getDestinationName()
     {
-        destinationNamePropertyState.get()
+        destinationNameProperty.getOrElse(file.name)
     }
 
     void setDestinationName(
         String value)
     {
-        destinationNamePropertyState.set(value)
+        destinationNameProperty.set(value)
     }
 
     void setDestinationNameProvider(
         Provider<String> value)
     {
-        destinationNamePropertyState.set(value)
+        destinationNameProperty.set(value)
     }
 
     @InputFile
     File getFile()
     {
-        filePropertyState.get()
+        fileProperty.get()
     }
 
     void setFile(
         File value)
     {
-        filePropertyState.set(value)
+        fileProperty.set(value)
     }
 
     void setFileProvider(
         Provider<File> value)
     {
-        filePropertyState.set(value)
+        fileProperty.set(value)
     }
 
     String getClientId()
     {
-        clientIdPropertyState.get()
+        clientIdProperty.get()
     }
 
     void setClientId(
         String value)
     {
-        clientIdPropertyState.set(value)
+        clientIdProperty.set(value)
     }
 
     void setClientIdProvider(
         Provider<String> value)
     {
-        clientIdPropertyState.set(value)
+        clientIdProperty.set(value)
     }
 
     String getClientSecret()
     {
-        clientSecretPropertyState.get()
+        clientSecretProperty.get()
     }
 
     void setClientSecret(
         String value)
     {
-        clientSecretPropertyState.set(value)
+        clientSecretProperty.set(value)
     }
 
     void setClientSecretProvider(
         Provider<String> value)
     {
-        clientSecretPropertyState.set(value)
+        clientSecretProperty.set(value)
     }
 
     @Input
     List<Permission> getPermissions()
     {
-        permissionsPropertyState.get()
+        permissionsProperty.getOrElse(DEFAULT_PERMISSIONS)
     }
 
     void setPermissions(
         List<Permission> value)
     {
-        permissionsPropertyState.set(value)
+        permissionsProperty.set(value)
     }
 
     void setPermissionsProvider(
         Provider<List<Permission>> value)
     {
-        permissionsPropertyState.set(value)
+        permissionsProperty.set(value)
     }
 
     @Input
     Boolean getUpdateIfExists()
     {
-        updateIfExistsPropertyState.get()
+        updateIfExistsProperty.getOrElse(DEFAULT_UPDATE_IF_EXISTS)
     }
 
     void setUpdateIfExists(
         Boolean value)
     {
-        updateIfExistsPropertyState.set(value)
+        updateIfExistsProperty.set(value)
     }
 
     void setUpdateIfExistsProvider(
         Provider<Boolean> value)
     {
-        updateIfExistsPropertyState.set(value)
+        updateIfExistsProperty.set(value)
     }
 }

@@ -3,7 +3,7 @@ package ru.kinca.gradle.googledrive
 import com.google.api.services.drive.model.Permission
 
 import org.gradle.api.Project
-import org.gradle.api.provider.PropertyState
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 /**
@@ -13,142 +13,145 @@ import org.gradle.api.provider.Provider
  */
 class ConfigExtension
 {
-    private final PropertyState<String> destinationFolderPropertyState
+    private final Property<String> destinationFolderProperty
 
-    private final PropertyState<String> destinationNamePropertyState
+    private final Property<String> destinationNameProperty
 
-    private final PropertyState<File> filePropertyState
+    private final Property<File> fileProperty
 
-    private final PropertyState<String> clientIdPropertyState
+    private final Property<String> clientIdProperty
 
-    private final PropertyState<String> clientSecretPropertyState
+    private final Property<String> clientSecretProperty
 
-    private final PropertyState<List<Permission>> permissionPropertyState
+    private final Property<List<Permission>> permissionProperty
 
-    private final PropertyState<Boolean> updateIfExistsPropertyState
+    private final Property<Boolean> updateIfExistsProperty
 
     ConfigExtension(
         Project project)
     {
-        destinationFolderPropertyState = project.property(String)
-        destinationNamePropertyState = project.property(String)
-        filePropertyState = project.property(File)
-        clientIdPropertyState = project.property(String)
-        clientSecretPropertyState = project.property(String)
-        permissionPropertyState = project.property(List)
+        destinationFolderProperty = project.objects.property(String)
+        destinationNameProperty = project.objects.property(String)
+        fileProperty = project.objects.property(File)
+        clientIdProperty = project.objects.property(String)
+        clientSecretProperty = project.objects.property(String)
+        permissionProperty = project.objects.property(List)
 
-        updateIfExistsPropertyState = new PropertyStateWithDefaultValue<>()
+        // Wrapper type properties are assigned default values, we need to
+        // override
+        updateIfExistsProperty = project.objects.property(Boolean)
+        updateIfExistsProperty.set(null as Boolean)
     }
 
     String getDestinationFolder()
     {
-        destinationFolderPropertyState.get()
+        destinationFolderProperty.get()
     }
 
     void setDestinationFolder(
         String value)
     {
-        destinationFolderPropertyState.set(value)
+        destinationFolderProperty.set(value)
     }
 
     Provider<String> getDestinationFolderProvider()
     {
-        destinationFolderPropertyState
+        destinationFolderProperty
     }
 
     String getDestinationName()
     {
-        destinationNamePropertyState.get()
+        destinationNameProperty.get()
     }
 
     void setDestinationName(
         String value)
     {
-        destinationNamePropertyState.set(value)
+        destinationNameProperty.set(value)
     }
 
     Provider<String> getDestinationNameProvider()
     {
-        destinationNamePropertyState
+        destinationNameProperty
     }
 
     File getFile()
     {
-        filePropertyState.get()
+        fileProperty.get()
     }
 
     void setFile(
         File value)
     {
-        filePropertyState.set(value)
+        fileProperty.set(value)
     }
 
     Provider<File> getFileProvider()
     {
-        filePropertyState
+        fileProperty
     }
 
     String getClientId()
     {
-        clientIdPropertyState.get()
+        clientIdProperty.get()
     }
 
     void setClientId(
         String value)
     {
-        clientIdPropertyState.set(value)
+        clientIdProperty.set(value)
     }
 
     Provider<String> getClientIdProvider()
     {
-        clientIdPropertyState
+        clientIdProperty
     }
 
     String getClientSecret()
     {
-        clientSecretPropertyState.get()
+        clientSecretProperty.get()
     }
 
     void setClientSecret(
         String value)
     {
-        clientSecretPropertyState.set(value)
+        clientSecretProperty.set(value)
     }
 
     Provider<String> getClientSecretProvider()
     {
-        clientSecretPropertyState
+        clientSecretProperty
     }
 
     List<Permission> getPermissions()
     {
-        permissionPropertyState.get()
+        permissionProperty.get()
     }
 
     void setPermissions(
         List<Permission> value)
     {
-        permissionPropertyState.set(value)
+        permissionProperty.set(value)
     }
 
     Provider<List<Permission>> getPermissionsProvider()
     {
-        permissionPropertyState
+        permissionProperty
     }
 
     Boolean getUpdateIfExists()
     {
-        updateIfExistsPropertyState.get()
+        updateIfExistsProperty.get()
     }
 
     void setUpdateIfExists(
         Boolean value)
     {
-        updateIfExistsPropertyState.set(value)
+        updateIfExistsProperty.set(value)
     }
 
     Provider<Boolean> getUpdateIfExistsProvider()
     {
-        updateIfExistsPropertyState
+        updateIfExistsProperty
     }
 }
