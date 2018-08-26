@@ -13,7 +13,9 @@ import org.gradle.api.provider.Provider
  */
 class ConfigExtension
 {
-    private final Property<String> destinationFolderProperty
+    private final Property<String> destinationFolderPathProperty
+
+    private final Property<String> destinationFolderIdProperty
 
     private final Property<String> destinationNameProperty
 
@@ -32,7 +34,8 @@ class ConfigExtension
     ConfigExtension(
         Project project)
     {
-        destinationFolderProperty = project.objects.property(String)
+        destinationFolderPathProperty = project.objects.property(String)
+        destinationFolderIdProperty = project.objects.property(String)
         destinationNameProperty = project.objects.property(String)
         fileProperty = project.objects.property(File)
         clientIdProperty = project.objects.property(String)
@@ -47,20 +50,36 @@ class ConfigExtension
         credentialsDirProperty = project.objects.property(File)
     }
 
-    String getDestinationFolder()
+    String getDestinationFolderPath()
     {
-        destinationFolderProperty.get()
+        destinationFolderPathProperty.getOrNull()
     }
 
-    void setDestinationFolder(
+    void setDestinationFolderPath(
         String value)
     {
-        destinationFolderProperty.set(value)
+        destinationFolderPathProperty.set(value)
     }
 
-    Provider<String> getDestinationFolderProvider()
+    Provider<String> getDestinationFolderPathProvider()
     {
-        destinationFolderProperty
+        destinationFolderPathProperty
+    }
+
+    String getDestinationFolderId()
+    {
+        destinationFolderIdProperty.getOrNull()
+    }
+
+    void setDestinationFolderId(
+        String value)
+    {
+        destinationFolderIdProperty.set(value)
+    }
+
+    Provider<String> getDestinationFolderIdProvider()
+    {
+        destinationFolderIdProperty
     }
 
     String getDestinationName()

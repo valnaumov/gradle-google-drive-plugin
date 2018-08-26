@@ -1,4 +1,4 @@
-This plugin allows to upload a file to your Google Drive folder. Currently it
+This plugin allows to upload a file to a Google Drive folder. Currently it
 does not support downloading of files and uploading to Team drives and the
 domain corpus, but you are welcome to show your interest in the
 https://github.com/valnaumov/gradle-google-drive-plugin/issues/1[corresponding
@@ -31,7 +31,10 @@ plugins {
 
 googleDrive {
     // Missing folders will be created
-    destinationFolder = 'test/upload'
+    destinationFolderPath = 'test/upload'
+
+    // Or you can specify a folder id
+    destinationFolderId = '1abcedefg'
 
     // If not specified, simple file name is used
     destinationName = 'cute_picture.jpg'
@@ -75,6 +78,25 @@ googleDrive {
                        .setRole('writer')]
 }
 ----
+
+== Uploading to another user's Drive
+
+Go to Shared with me tab, get the URL which will be like
+`https://drive.google.com/drive/folders/sharedFolderId`.
+
+Or get a direct url to the folder `https://drive.google.com/open?id=sharedFolderId`.
+
+[source,groovy]
+----
+googleDrive {
+    // Other properties configured...
+
+    destinationFolderId = 'sharedFolderId'
+}
+----
+
+NOTE: You can specify either destinationFolderPath or destinationFolderId, not
+both.
 
 = Example
 

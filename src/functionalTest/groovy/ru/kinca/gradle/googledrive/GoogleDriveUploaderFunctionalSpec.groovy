@@ -36,7 +36,7 @@ extends AbstractFunctionalSpec
         setup:
         buildFile << """
             googleDrive {
-                destinationFolder = '${temporaryDriveFolder.createdFolder
+                destinationFolderPath = '${temporaryDriveFolder.createdFolder
                     .getName()}'
                 destinationName = '$DESTINATION_NAME'
                 file = project.file('$uploadedFilePathEscaped')
@@ -68,7 +68,7 @@ extends AbstractFunctionalSpec
 
         buildFile << """
             googleDrive {
-                destinationFolder = '$destinationFolder'
+                destinationFolderPath = '$destinationFolder'
                 destinationName = '$DESTINATION_NAME'
                 file = project.file('$uploadedFilePathEscaped')
                 clientId  = '$CLIENT_ID'
@@ -100,7 +100,7 @@ extends AbstractFunctionalSpec
         String destinationFolder = temporaryDriveFolder.createdFolder.getName()
         buildFile << """
             googleDrive {
-                destinationFolder = '$destinationFolder'
+                destinationFolderPath = '$destinationFolder'
                 destinationName = '$DESTINATION_NAME'
                 file = project.file('$uploadedFilePathEscaped')
                 clientId  = '$CLIENT_ID'
@@ -136,6 +136,32 @@ extends AbstractFunctionalSpec
         }
     }
 
+    void 'Uploads to destination folder specified with an id'()
+    {
+        setup:
+        String destinationFolderId = temporaryDriveFolder.createdFolder.getId()
+
+        buildFile << """
+            googleDrive {
+                destinationFolderId = '$destinationFolderId'
+                destinationName = '$DESTINATION_NAME'
+                file = project.file('$uploadedFilePathEscaped')
+                clientId  = '$CLIENT_ID'
+                clientSecret = '$CLIENT_SECRET'
+            }
+        """
+
+        when:
+        def result = build()
+
+        then:
+        result.task(":${GoogleDriveUploaderPlugin.DEFAULT_TASK_NAME}")
+            .outcome == TaskOutcome.SUCCESS
+
+        DriveUtils.hasFile(googleClient.drive,
+            temporaryDriveFolder.createdFolder, DESTINATION_NAME)
+    }
+
     void 'Does not update existing file if set so'()
     {
         setup:
@@ -144,7 +170,7 @@ extends AbstractFunctionalSpec
         String destinationFolder = temporaryDriveFolder.createdFolder.getName()
         buildFile << """
             googleDrive {
-                destinationFolder = '$destinationFolder'
+                destinationFolderPath = '$destinationFolder'
                 destinationName = '$DESTINATION_NAME'
                 file = project.file('$uploadedFilePathEscaped')
                 clientId  = '$CLIENT_ID'

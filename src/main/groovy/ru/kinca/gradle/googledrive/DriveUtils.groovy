@@ -11,7 +11,7 @@ import com.google.api.services.drive.model.File
 @SuppressWarnings([ 'DuplicateStringLiteral', 'UnnecessaryGString' ])
 final class DriveUtils
 {
-    private static final String FOLDER_MIME_TYPE =
+    public static final String FOLDER_MIME_TYPE =
         'application/vnd.google-apps.folder'
     private static final String DEFAULT_SPACES = 'drive'
     private static final String DEFAULT_CORPORA = 'user'

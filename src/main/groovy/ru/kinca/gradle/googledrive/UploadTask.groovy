@@ -14,6 +14,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -30,7 +31,9 @@ extends DefaultTask
 
     protected static final Boolean DEFAULT_UPDATE_IF_EXISTS = true
 
-    private final Property<String> destinationFolderProperty
+    private final Property<String> destinationFolderPathProperty
+
+    private final Property<String> destinationFolderIdProperty
 
     private final Property<String> destinationNameProperty
 
@@ -48,7 +51,8 @@ extends DefaultTask
 
     UploadTask()
     {
-        destinationFolderProperty = project.objects.property(String)
+        destinationFolderPathProperty = project.objects.property(String)
+        destinationFolderIdProperty = project.objects.property(String)
         destinationNameProperty = project.objects.property(String)
         fileProperty = project.objects.property(File)
         clientIdProperty = project.objects.property(String)
@@ -71,9 +75,7 @@ extends DefaultTask
             clientSecret,
             new FileDataStoreFactory(credentialsDir))
 
-        String destinationFolderId = DriveUtils.makeDirs(
-            googleClient.drive, 'root',
-            GoogleDriveUploaderPlugin.toPathElements(destinationFolder))
+        String destinationFolderId = determineDestination(googleClient)
 
         DriveFile driveFile = new DriveFile()
         driveFile.setName(destinationName)
@@ -131,8 +133,27 @@ extends DefaultTask
         permissionsBatchRequest.execute()
 
         logger.info("File '${file.canonicalPath}' is uploaded to" +
-            " '$destinationFolder' and named '$destinationName'.")
+            " '$destinationFolderPath' and named '$destinationName'.")
         logger.quiet("Google Drive short link: ${getLink(updated)}")
+    }
+
+    private String determineDestination(
+        GoogleClient googleClient)
+    {
+        if (destinationFolderId && !destinationFolderPath)
+        {
+            return destinationFolderId
+        }
+
+        if (!destinationFolderId && destinationFolderPath)
+        {
+            return DriveUtils.makeDirs(
+                googleClient.drive, 'root',
+                GoogleDriveUploaderPlugin.toPathElements(destinationFolderPath))
+        }
+
+        throw new GradleException('You must specify either' +
+            ' destinationFolderId or destinationFolderPath')
     }
 
     private static String getLink(
@@ -141,22 +162,42 @@ extends DefaultTask
         "https://drive.google.com/open?id=${file.getId()}"
     }
 
+    @Optional
     @Input
-    String getDestinationFolder()
+    String getDestinationFolderPath()
     {
-        destinationFolderProperty.get()
+        destinationFolderPathProperty.getOrNull()
     }
 
-    void setDestinationFolder(
+    void setDestinationFolderPath(
         String value)
     {
-        destinationFolderProperty.set(value)
+        destinationFolderPathProperty.set(value)
     }
 
-    void setDestinationFolderProvider(
+    void setDestinationFolderPathProvider(
         Provider<String> value)
     {
-        destinationFolderProperty.set(value)
+        destinationFolderPathProperty.set(value)
+    }
+
+    @Optional
+    @Input
+    String getDestinationFolderId()
+    {
+        destinationFolderIdProperty.getOrNull()
+    }
+
+    void setDestinationFolderId(
+        String value)
+    {
+        destinationFolderIdProperty.set(value)
+    }
+
+    void setDestinationFolderIdProvider(
+        Provider<String> value)
+    {
+        destinationFolderIdProperty.set(value)
     }
 
     @Input

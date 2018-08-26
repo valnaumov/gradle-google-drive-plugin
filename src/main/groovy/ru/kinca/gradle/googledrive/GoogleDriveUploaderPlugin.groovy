@@ -26,7 +26,9 @@ implements Plugin<Project>
         project.tasks.create(DEFAULT_TASK_NAME, UploadTask) { UploadTask it ->
             it.clientIdProvider = config.clientIdProvider
             it.clientSecretProvider = config.clientSecretProvider
-            it.destinationFolderProvider = config.destinationFolderProvider
+            it.destinationFolderPathProvider = config
+                .destinationFolderPathProvider
+            it.destinationFolderIdProvider = config.destinationFolderIdProvider
             it.destinationNameProvider = config.destinationNameProvider
             it.fileProvider = config.fileProvider
             it.permissionsProvider = config.permissionsProvider
